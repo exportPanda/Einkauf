@@ -198,7 +198,10 @@ def entwurf_ablegen(empfaenger: str, betreff: str, text: str, anhang: Path) -> N
 
 `outlook.py` wird **erst innerhalb der Funktion** importiert, damit Ubuntu ohne `pywin32` läuft.
 
-### 3.1 Ubuntu: `mail/eml.py`
+### 3.1 Ubuntu: `mail/eml.py` – erledigt
+- Dateiname `JJJJ-MM-TT_HHMMSS_<PDF-Name>.eml`, wird nie überschrieben, erst als `.tmp` geschrieben.
+- Text als Quoted-Printable, Betreff und Anhangname RFC-konform kodiert (Datei ist reines ASCII).
+- In Thunderbird: Datei öffnen, dann „Nachricht > Als neu bearbeiten".
 - `email.message.EmailMessage` aufbauen, PDF anhängen, Header `X-Unsent: 1` setzen.
 - Als `.eml` in `ausgang_eml` speichern (Dateiname mit Zeitstempel).
 - Kontrolle: `thunderbird ausgang/<datei>.eml` öffnen, Umlaute und Anhang prüfen.
