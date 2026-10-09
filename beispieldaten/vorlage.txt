@@ -1,0 +1,6 @@
+Guten Tag $ansprechpartner,
+
+anbei erhalten Sie unsere Bestellung $bestellnr vom $datum.
+
+Mit freundlichen Grüßen
+Einkauf

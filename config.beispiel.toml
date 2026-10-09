@@ -1,0 +1,30 @@
+# Kopieren nach config.toml und anpassen. config.toml kommt nicht ins Git.
+# Relative Pfade gelten relativ zum Ordner dieser Datei.
+
+[pfade]
+eingang     = "beispieldaten/eingang"
+kontakte    = "beispieldaten/kontakte_beispiel.csv"
+vorlage     = "beispieldaten/vorlage.txt"
+ausgang_eml = "ausgang"            # nur für mail.modus = "eml"
+erledigt    = "beispieldaten/erledigt"
+protokoll   = "automail.log"
+
+# Windows: volle Serveradresse statt Laufwerksbuchstabe, in einfachen Anführungszeichen.
+# eingang   = '\\server\freigabe\Einkauf\Eingang'
+# kontakte  = '\\server\freigabe\Einkauf\kontakte.csv'
+# vorlage   = '\\server\freigabe\Einkauf\vorlage.txt'
+# erledigt  = '\\server\freigabe\Einkauf\Erledigt'
+# protokoll = '\\server\freigabe\Einkauf\automail.log'
+
+[mail]
+modus = "eml"                      # "eml" (Ubuntu) oder "outlook" (Windows)
+absender = "einkauf@example.com"
+
+[abfrage]
+intervall_sekunden = 30
+stabil_sekunden    = 5             # Dateigröße muss so lange gleich bleiben
+
+[ki]
+aktiv  = false
+modell = "llama3.2"
+url    = "http://localhost:11434"
