@@ -1,6 +1,9 @@
-Guten Tag $ansprechpartner,
+Betreff: Bestellung $bestellnr vom $datum – $lieferant
+
+$anrede,
 
 anbei erhalten Sie unsere Bestellung $bestellnr vom $datum.
+Bitte bestätigen Sie den Eingang und den Liefertermin.
 
 Mit freundlichen Grüßen
 Einkauf

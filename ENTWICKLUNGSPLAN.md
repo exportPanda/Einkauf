@@ -158,7 +158,10 @@ Reihenfolge so gewählt, dass jeder Schritt sofort testbar ist.
 - Kein Treffer bzw. mehrere Treffer → protokollieren, Datei nicht verarbeiten.
 - **Tests:** Umlaute (Müller, Größe), BOM am Dateianfang, fehlender Kontakt, Dubletten.
 
-### 2.4 Vorlage füllen (`vorlage.py`)
+### 2.4 Vorlage füllen (`vorlage.py`) – erledigt
+- `laden(pfad) -> Vorlage` prüft beim Start: erste Zeile `Betreff: ...`, nur bekannte Platzhalter, gültige `$`.
+- `fuellen(vorlage, info, kontakt) -> Entwurf` (`empfaenger`, `betreff`, `text`).
+- Platzhalter `$lieferant $bestellnr $datum $ansprechpartner $anrede $email`; `$anrede` fällt ohne Ansprechpartner auf „Sehr geehrte Damen und Herren" zurück.
 - Vorlage mit `encoding="utf-8"` lesen, Platzhalter per `string.Template` (`$lieferant`, `$bestellnr`).
 - Fehlender Platzhalter → klare Fehlermeldung.
 - **Tests:** alle Platzhalter gefüllt, fehlender Wert.
