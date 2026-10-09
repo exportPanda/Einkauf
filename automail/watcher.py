@@ -7,6 +7,7 @@ Eine PDF gilt erst als fertig, wenn Größe und Änderungszeit lange genug gleic
 from __future__ import annotations
 
 import logging
+import threading
 import time
 from functools import partial
 from pathlib import Path
@@ -52,8 +53,16 @@ class Stabilitaetspruefer:
         return fertig
 
 
-def durchlauf(cfg: Konfiguration, pruefer: Stabilitaetspruefer, ablegen: ablauf.Ablage) -> int:
-    """Ein Durchgang. Gibt die Zahl der fertigen PDFs zurück."""
+def durchlauf(
+    cfg: Konfiguration,
+    pruefer: Stabilitaetspruefer,
+    ablegen: ablauf.Ablage,
+    stopp: threading.Event | None = None,
+) -> int:
+    """Ein Durchgang. Gibt die Zahl der fertigen PDFs zurück.
+
+    Ist stopp gesetzt, wird nach der aktuellen Datei aufgehört, nie mittendrin.
+    """
     try:
         fertig = pruefer.fertige(pdfs_im_eingang(cfg.pfade.eingang))
     except OSError as e:
@@ -71,6 +80,8 @@ def durchlauf(cfg: Konfiguration, pruefer: Stabilitaetspruefer, ablegen: ablauf.
         return len(fertig)
 
     for pdf in fertig:
+        if stopp is not None and stopp.is_set():
+            break
         try:
             ablauf.verarbeite(pdf, cfg, liste, vorl, ablegen)
         except Exception:
@@ -83,23 +94,30 @@ def lauf(
     *,
     einmal: bool = False,
     ablegen: ablauf.Ablage | None = None,
-    schlafen: Callable[[float], None] = time.sleep,
+    stopp: threading.Event | None = None,
+    schlafen: Callable[[float], object] | None = None,
     uhr: Callable[[], float] = time.monotonic,
 ) -> None:
-    """Dauerschleife. Mit einmal=True: zweimal hinsehen (Stabilitätsprüfung), verarbeiten, Ende."""
+    """Dauerschleife bis stopp gesetzt wird.
+
+    Mit einmal=True: zweimal hinsehen (Stabilitätsprüfung), verarbeiten, Ende.
+    """
     ablegen = ablegen or partial(mail.entwurf_ablegen, cfg=cfg)
+    stopp = stopp or threading.Event()
+    schlafen = schlafen or stopp.wait  # wacht beim Stoppen sofort auf
     pruefer = Stabilitaetspruefer(cfg.abfrage.stabil_sekunden, uhr)
 
     if einmal:
         pruefer.fertige(pdfs_im_eingang(cfg.pfade.eingang))
         schlafen(cfg.abfrage.stabil_sekunden)
-        durchlauf(cfg, pruefer, ablegen)
+        durchlauf(cfg, pruefer, ablegen, stopp)
         return
 
     log.info("Abfrage alle %g s gestartet", cfg.abfrage.intervall_sekunden)
-    while True:
+    while not stopp.is_set():
         try:
-            durchlauf(cfg, pruefer, ablegen)
+            durchlauf(cfg, pruefer, ablegen, stopp)
         except Exception:
             log.exception("Unerwarteter Fehler im Durchgang")
         schlafen(cfg.abfrage.intervall_sekunden)
+    log.info("Abfrage beendet")

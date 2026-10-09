@@ -1,0 +1,22 @@
+# systemd-Benutzerdienst für die Entwicklung auf Ubuntu.
+# Einrichten:
+#   mkdir -p ~/.config/systemd/user
+#   cp deploy/linux/automail.service ~/.config/systemd/user/
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now automail
+# Protokoll: journalctl --user -u automail -f   (zusätzlich automail.log im Projektordner)
+
+[Unit]
+Description=Automail – E-Mail-Entwürfe aus eingehenden PDFs
+
+[Service]
+WorkingDirectory=%h/almig/Einkauf/Automail
+ExecStart=%h/almig/Einkauf/Automail/.venv/bin/python %h/almig/Einkauf/Automail/automail_start.py
+Environment=PYTHONUNBUFFERED=1
+Restart=on-failure
+RestartSec=30
+# Zeit, um die aktuelle Datei fertig zu verarbeiten (SIGTERM wird abgefangen)
+TimeoutStopSec=60
+
+[Install]
+WantedBy=default.target

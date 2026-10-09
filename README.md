@@ -6,6 +6,8 @@ Plan und Stand: siehe [ENTWICKLUNGSPLAN.md](ENTWICKLUNGSPLAN.md).
 
 ## Einrichtung
 
+Voraussetzung: Python 3.11 oder neuer.
+
 Ubuntu:
 
 ```bash
@@ -16,7 +18,7 @@ cp config.beispiel.toml config.toml
 .venv/bin/python -m automail
 ```
 
-Windows:
+Windows (ausführlich, mit Dauerbetrieb und Checkliste: [docs/windows.md](docs/windows.md)):
 
 ```bat
 py -m venv .venv
@@ -32,8 +34,15 @@ Serveradresse (`\\server\freigabe\...`) eintragen.
 Outlook-Anbindung prüfen (legt einen Testentwurf unter „Entwürfe" an, sendet nichts):
 
 ```bat
-.venv\Scripts\python -m automail.mail.outlook ich@firma.de
+.venv\Scripts\python -m automail.mail.outlook ihre.adresse@example.com
 ```
+
+## Dauerbetrieb
+
+- Ubuntu: systemd-Benutzerdienst, siehe Kopf von `deploy/linux/automail.service`.
+- Windows: geplante Aufgabe, siehe [docs/windows.md](docs/windows.md).
+- Start immer über `automail_start.py`; es nimmt die `config.toml` neben sich, egal aus welchem Ordner.
+- Beenden (Strg+C, `systemctl --user stop automail`) wartet, bis die aktuelle PDF fertig ist.
 
 ## Regeln
 

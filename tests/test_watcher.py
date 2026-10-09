@@ -123,3 +123,39 @@ def test_dauerschleife_ueberlebt_fehler(umgebung, uhr, monkeypatch):
         pass
     assert len(aufrufe) == 3
     assert uhr.jetzt == 1000 + 2 * 30
+
+
+def test_stopp_beendet_dauerschleife(umgebung, uhr):
+    import threading
+
+    stopp = threading.Event()
+    runden = []
+
+    def schlafen(sekunden):
+        runden.append(sekunden)
+        if len(runden) == 2:
+            stopp.set()
+
+    lauf(umgebung.cfg, ablegen=Ablage(), stopp=stopp, schlafen=schlafen, uhr=uhr)
+    assert runden == [30, 30]
+
+
+def test_stopp_mitten_im_durchlauf_verarbeitet_aktuelle_datei_fertig(umgebung, uhr):
+    import threading
+
+    for nr in (1, 2, 3):
+        umgebung.pdf(f"Müller GmbH_{nr}_2026-10-09.pdf")
+    stopp = threading.Event()
+    aufrufe = []
+
+    def ablage(*args):
+        aufrufe.append(args)
+        stopp.set()  # Stopp kommt während der ersten Datei
+
+    pruefer = Stabilitaetspruefer(5, uhr)
+    durchlauf(umgebung.cfg, pruefer, ablage, stopp)
+    uhr.schlafen(5)
+    durchlauf(umgebung.cfg, pruefer, ablage, stopp)
+    assert len(aufrufe) == 1
+    assert umgebung.inhalt("erledigt") == ["Müller GmbH_1_2026-10-09.pdf"]
+    assert umgebung.inhalt("eingang") == ["Müller GmbH_2_2026-10-09.pdf", "Müller GmbH_3_2026-10-09.pdf"]

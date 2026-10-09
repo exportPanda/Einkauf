@@ -27,3 +27,26 @@ def test_start_mit_fehlerhafter_vorlage(umgebung):
 def test_start_ohne_konfiguration(tmp_path, capsys):
     assert main(["--config", str(tmp_path / "fehlt.toml"), "--einmal"]) == 2
     assert "nicht gefunden" in capsys.readouterr().err
+
+
+def test_startskript_findet_config_neben_sich(tmp_path):
+    import subprocess
+    import sys
+    from pathlib import Path
+
+    projekt = Path(__file__).resolve().parent.parent
+    # Aus einem fremden Arbeitsverzeichnis starten: Die config.toml neben dem Skript fehlt
+    # im Repository-Checkout evtl., deshalb hier nur auf eine verständliche Meldung prüfen.
+    ergebnis = subprocess.run(
+        [sys.executable, str(projekt / "automail_start.py"), "--config", str(tmp_path / "x.toml")],
+        cwd=tmp_path, capture_output=True, text=True, encoding="utf-8",
+    )
+    assert ergebnis.returncode == 2
+    assert "x.toml" in ergebnis.stderr
+
+
+def test_ohne_stderr_kein_absturz(umgebung, monkeypatch):
+    import sys
+
+    monkeypatch.setattr(sys, "stderr", None)
+    test_einmal_durchlauf(umgebung)

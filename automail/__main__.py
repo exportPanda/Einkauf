@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import argparse
 import logging
+import signal
 import sys
+import threading
 from pathlib import Path
 
 from . import __version__, config, kontakte, protokoll, vorlage, watcher
@@ -47,10 +49,19 @@ def main(argv: list[str] | None = None) -> int:
     if not cfg.pfade.eingang.is_dir():
         log.warning("Eingangsordner nicht erreichbar: %s", cfg.pfade.eingang)
 
+    # Strg+C bzw. "systemctl stop" beenden die Schleife erst nach der aktuellen Datei.
+    stopp = threading.Event()
+
+    def beenden(signum, _frame):
+        log.info("Signal %s empfangen, beende nach der aktuellen Datei", signal.Signals(signum).name)
+        stopp.set()
+
+    vorher = {s: signal.signal(s, beenden) for s in (signal.SIGINT, signal.SIGTERM)}
     try:
-        watcher.lauf(cfg, einmal=args.einmal)
-    except KeyboardInterrupt:
-        log.info("Beendet")
+        watcher.lauf(cfg, einmal=args.einmal, stopp=stopp)
+    finally:
+        for s, handler in vorher.items():
+            signal.signal(s, handler)
     return 0
 
 

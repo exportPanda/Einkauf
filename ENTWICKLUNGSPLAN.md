@@ -210,7 +210,7 @@ def entwurf_ablegen(empfaenger: str, betreff: str, text: str, anhang: Path) -> N
 ### 3.2 Windows: `mail/outlook.py` – geschrieben, auf Ubuntu mit nachgebautem pywin32 getestet
 - Nur `Save()`, nie `Send()`. Outlook nutzt das Standardkonto, Signatur wird nicht eingefügt.
 - Outlook nicht erreichbar → klare Meldung, PDF bleibt im Eingang und wird erneut versucht.
-- Selbsttest auf Windows: `.venv\Scripts\python -m automail.mail.outlook ich@firma.de`
+- Selbsttest auf Windows: `.venv\Scripts\python -m automail.mail.outlook ihre.adresse@example.com`
 - `win32com.client.Dispatch("Outlook.Application")`, `CreateItem(0)`.
 - `To`, `Subject`, `Body`, `Attachments.Add(str(anhang))`, dann `.Save()` (nicht `.Send()`).
 - Auf Ubuntu nur Syntax prüfen; Testfall mit `pytest.mark.skipif(sys.platform != "win32")`.
@@ -229,7 +229,10 @@ def entwurf_ablegen(empfaenger: str, betreff: str, text: str, anhang: Path) -> N
 
 ---
 
-## Phase 5: Dauerbetrieb auf Ubuntu (ca. ½ Tag)
+## Phase 5: Dauerbetrieb auf Ubuntu (ca. ½ Tag) – erledigt
+
+Eingerichtet aus `deploy/linux/automail.service`, Start über `automail_start.py`.
+`systemctl --user stop/restart automail` beendet erst nach der aktuellen PDF (SIGTERM wird abgefangen).
 
 systemd-Benutzerdienst `~/.config/systemd/user/automail.service`:
 
@@ -256,7 +259,12 @@ journalctl --user -u automail -f
 
 ---
 
-## Phase 6: Übergabe an Windows vorbereiten (ca. ½ Tag)
+## Phase 6: Übergabe an Windows vorbereiten (ca. ½ Tag) – erledigt
+
+Ergebnis: `docs/windows.md` (Installation, Selbsttest, drei Wege für den Dauerbetrieb, Probebetrieb),
+`deploy/windows/aufgabe_einrichten.ps1`, `automail_start.py` (unabhängig vom Arbeitsverzeichnis,
+läuft auch mit `pythonw.exe` ohne Konsole), `.gitattributes` (CRLF für `.ps1`).
+Git-Verlauf geprüft: nur erfundene `example.com`-Adressen, keine Zugangsdaten.
 
 - [ ] `README.md`: Installation auf Windows Schritt für Schritt
   (`py -m venv .venv`, `.venv\Scripts\pip install -r requirements.txt`, `config.toml` anlegen).
