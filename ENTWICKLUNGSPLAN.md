@@ -142,8 +142,10 @@ Reihenfolge so gewählt, dass jeder Schritt sofort testbar ist.
 - Relative Pfade relativ zur Konfigurationsdatei auflösen.
 - Klare Fehlermeldung, wenn ein Pflichtwert fehlt.
 
-### 2.2 Dateinamen zerlegen (`dateiname.py`)
-- Funktion `zerlege(dateiname) -> dict | None` (z. B. Lieferant, Bestellnummer, Datum).
+### 2.2 Dateinamen zerlegen (`dateiname.py`) – erledigt
+- Funktion `zerlege(dateiname) -> Dateiinfo | None` mit `lieferant`, `bestellnr`, `datum`.
+- Schema `Lieferant_Bestellnr_Datum.pdf`, Datum als `JJJJ-MM-TT` oder `TT.MM.JJJJ`,
+  Trennung von rechts (Lieferant darf `_` enthalten), Umlaute werden nach NFC vereinheitlicht.
 - Ungültige Namen geben `None` zurück und werden protokolliert, nicht verarbeitet.
 - **Tests:** gültige Namen, Umlaute, Leerzeichen, falsche Endung, fehlende Teile.
 
