@@ -149,7 +149,10 @@ Reihenfolge so gewählt, dass jeder Schritt sofort testbar ist.
 - Ungültige Namen geben `None` zurück und werden protokolliert, nicht verarbeitet.
 - **Tests:** gültige Namen, Umlaute, Leerzeichen, falsche Endung, fehlende Teile.
 
-### 2.3 Kontaktsuche (`kontakte.py`)
+### 2.3 Kontaktsuche (`kontakte.py`) – erledigt
+- `laden(pfad) -> Kontaktliste`, dann `finde(lieferant) -> Kontakt | None` (`lieferant`, `ansprechpartner`, `email`).
+- Spalten `Lieferant;Ansprechpartner;E-Mail`. ANSI-Export, falsches Trennzeichen oder fehlende Spalten ergeben eine klare Fehlermeldung.
+- Suche ignoriert Groß-/Kleinschreibung, Leerzeichen und Unicode-Form (auch ß = SS). Dubletten mit gleicher Adresse gelten als eindeutig.
 - CSV mit `encoding="utf-8-sig"` und `delimiter=";"` lesen (Excel-Export).
 - Suche nach Lieferant, unabhängig von Groß-/Kleinschreibung und Leerzeichen am Rand.
 - Kein Treffer bzw. mehrere Treffer → protokollieren, Datei nicht verarbeiten.
