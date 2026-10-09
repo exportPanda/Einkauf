@@ -29,6 +29,12 @@ copy config.beispiel.toml config.toml
 In `config.toml` auf Windows `mail.modus = "outlook"` setzen und die Pfade als
 Serveradresse (`\\server\freigabe\...`) eintragen.
 
+Outlook-Anbindung prüfen (legt einen Testentwurf unter „Entwürfe" an, sendet nichts):
+
+```bat
+.venv\Scripts\python -m automail.mail.outlook ich@firma.de
+```
+
 ## Regeln
 
 - Pfade stehen nur in `config.toml`, im Code immer `pathlib`.

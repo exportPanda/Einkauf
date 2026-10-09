@@ -207,7 +207,10 @@ def entwurf_ablegen(empfaenger: str, betreff: str, text: str, anhang: Path) -> N
 - Kontrolle: `thunderbird ausgang/<datei>.eml` öffnen, Umlaute und Anhang prüfen.
 - **Test:** `.eml` wieder einlesen, Empfänger/Betreff/Anhang vergleichen.
 
-### 3.2 Windows: `mail/outlook.py` (schreiben, aber erst auf Windows testen)
+### 3.2 Windows: `mail/outlook.py` – geschrieben, auf Ubuntu mit nachgebautem pywin32 getestet
+- Nur `Save()`, nie `Send()`. Outlook nutzt das Standardkonto, Signatur wird nicht eingefügt.
+- Outlook nicht erreichbar → klare Meldung, PDF bleibt im Eingang und wird erneut versucht.
+- Selbsttest auf Windows: `.venv\\Scripts\\python -m automail.mail.outlook ich@firma.de`
 - `win32com.client.Dispatch("Outlook.Application")`, `CreateItem(0)`.
 - `To`, `Subject`, `Body`, `Attachments.Add(str(anhang))`, dann `.Save()` (nicht `.Send()`).
 - Auf Ubuntu nur Syntax prüfen; Testfall mit `pytest.mark.skipif(sys.platform != "win32")`.

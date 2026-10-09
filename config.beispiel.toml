@@ -20,7 +20,7 @@ protokoll   = "automail.log"
 
 [mail]
 modus = "eml"                      # "eml" (Ubuntu) oder "outlook" (Windows)
-absender = "einkauf@example.com"
+absender = "einkauf@example.com"   # nur eml; Outlook nutzt das Standardkonto
 
 [abfrage]
 intervall_sekunden = 30
