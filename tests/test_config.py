@@ -13,6 +13,7 @@ eingang = "ein"
 kontakte = "k.csv"
 vorlage = "v.txt"
 erledigt = "fertig"
+fehler = "fehler"
 protokoll = "log.txt"
 ausgang_eml = "aus"
 

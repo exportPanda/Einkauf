@@ -7,6 +7,7 @@ kontakte    = "beispieldaten/kontakte_beispiel.csv"
 vorlage     = "beispieldaten/vorlage.txt"
 ausgang_eml = "ausgang"            # nur für mail.modus = "eml"
 erledigt    = "beispieldaten/erledigt"
+fehler      = "beispieldaten/fehler"   # ungültiger Dateiname oder kein Kontakt
 protokoll   = "automail.log"
 
 # Windows: volle Serveradresse statt Laufwerksbuchstabe, in einfachen Anführungszeichen.
@@ -14,6 +15,7 @@ protokoll   = "automail.log"
 # kontakte  = '\\server\freigabe\Einkauf\kontakte.csv'
 # vorlage   = '\\server\freigabe\Einkauf\vorlage.txt'
 # erledigt  = '\\server\freigabe\Einkauf\Erledigt'
+# fehler    = '\\server\freigabe\Einkauf\Fehler'
 # protokoll = '\\server\freigabe\Einkauf\automail.log'
 
 [mail]

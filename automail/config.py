@@ -19,6 +19,7 @@ class Pfade:
     kontakte: Path
     vorlage: Path
     erledigt: Path
+    fehler: Path
     protokoll: Path
     ausgang_eml: Path | None
 
@@ -93,6 +94,7 @@ def laden(datei: Path | str) -> Konfiguration:
             kontakte=_pfad(basis, _pflicht(p, "pfade", "kontakte")),
             vorlage=_pfad(basis, _pflicht(p, "pfade", "vorlage")),
             erledigt=_pfad(basis, _pflicht(p, "pfade", "erledigt")),
+            fehler=_pfad(basis, _pflicht(p, "pfade", "fehler")),
             protokoll=_pfad(basis, _pflicht(p, "pfade", "protokoll")),
             ausgang_eml=_pfad(basis, ausgang_eml) if ausgang_eml else None,
         ),

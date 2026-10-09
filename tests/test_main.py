@@ -1,12 +1,29 @@
 from automail.__main__ import main
-from tests.test_config import MINIMAL, schreibe
 
 
-def test_start_mit_gueltiger_konfiguration(tmp_path):
-    assert main(["--config", str(schreibe(tmp_path, MINIMAL))]) == 0
-    assert (tmp_path / "log.txt").read_text(encoding="utf-8").count("Konfiguration geladen") == 1
+def test_einmal_durchlauf(umgebung):
+    umgebung.pdf("scan0001.pdf")
+    # stabil_sekunden auf 0, damit der Test nicht wartet
+    umgebung.konfigdatei.write_text(
+        umgebung.konfigdatei.read_text(encoding="utf-8").replace("stabil_sekunden = 5", "stabil_sekunden = 0"),
+        encoding="utf-8",
+    )
+    assert main(["--config", str(umgebung.konfigdatei), "--einmal"]) == 0
+    assert umgebung.inhalt("fehler") == ["scan0001.pdf"]
+    protokoll = (umgebung.ordner / "automail.log").read_text(encoding="utf-8")
+    assert "Konfiguration geladen" in protokoll and "scan0001.pdf" in protokoll
+
+
+def test_start_ohne_kontakttabelle(umgebung):
+    (umgebung.ordner / "kontakte.csv").unlink()
+    assert main(["--config", str(umgebung.konfigdatei), "--einmal"]) == 2
+
+
+def test_start_mit_fehlerhafter_vorlage(umgebung):
+    (umgebung.ordner / "vorlage.txt").write_text("kein Betreff\n", encoding="utf-8")
+    assert main(["--config", str(umgebung.konfigdatei), "--einmal"]) == 2
 
 
 def test_start_ohne_konfiguration(tmp_path, capsys):
-    assert main(["--config", str(tmp_path / "fehlt.toml")]) == 2
+    assert main(["--config", str(tmp_path / "fehlt.toml"), "--einmal"]) == 2
     assert "nicht gefunden" in capsys.readouterr().err

@@ -166,11 +166,17 @@ Reihenfolge so gewählt, dass jeder Schritt sofort testbar ist.
 - Fehlender Platzhalter → klare Fehlermeldung.
 - **Tests:** alle Platzhalter gefüllt, fehlender Wert.
 
-### 2.5 Protokoll (`protokoll.py`)
+### 2.5 Protokoll (`protokoll.py`) – erledigt
 - `logging` mit `FileHandler(..., encoding="utf-8")` plus Konsolenausgabe.
 - Jede verarbeitete Datei: Zeitpunkt, Dateiname, Empfänger, Ergebnis.
 
-### 2.6 Ordner abfragen (`watcher.py`)
+### 2.6 Ordner abfragen (`watcher.py`, `ablauf.py`) – erledigt
+- Nur `*.pdf` direkt im Eingang; `~$...` und versteckte Dateien werden ignoriert.
+- Fertig erst, wenn Größe **und** Änderungszeit `stabil_sekunden` lang gleich bleiben; leere Dateien nie.
+- Ungültiger Dateiname oder kein Kontakt → Ordner `fehler` (neuer Pflichtpfad `[pfade] fehler`).
+- Erst nach `erledigt` verschieben, dann Entwurf ablegen; scheitert die Ablage, geht die PDF zurück in den Eingang (kein doppelter Entwurf).
+- Kontakttabelle und Vorlage werden pro Durchgang neu geladen, wenn PDFs anstehen; beim Start einmal geprüft.
+- `python -m automail --einmal` für einen einzelnen Durchgang.
 - **Abfrage per Schleife**, kein Dateisystem-Ereignis (auf Netzlaufwerken unzuverlässig).
 - Datei gilt erst als fertig, wenn die Größe `stabil_sekunden` lang gleich bleibt.
 - Verarbeitete PDFs in den Ordner `erledigt` verschieben, damit nichts doppelt läuft.
