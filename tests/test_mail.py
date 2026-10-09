@@ -44,6 +44,12 @@ def test_eml_ist_reines_ascii(umgebung):
     ablegen_test(umgebung).read_bytes().decode("ascii")
 
 
+def test_eml_hat_crlf_zeilenenden(umgebung):
+    inhalt = ablegen_test(umgebung).read_bytes()
+    assert b"\r\n" in inhalt
+    assert b"\n" not in inhalt.replace(b"\r\n", b"")
+
+
 def test_keine_hilfsdatei_uebrig(umgebung):
     ablegen_test(umgebung)
     assert [p.suffix for p in (umgebung.ordner / "ausgang").iterdir()] == [".eml"]

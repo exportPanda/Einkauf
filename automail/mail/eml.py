@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime
+from email import policy
 from email.message import EmailMessage
 from email.utils import formatdate, make_msgid
 from pathlib import Path
@@ -46,7 +47,8 @@ def entwurf_ablegen(
 
     # Erst unter Hilfsnamen schreiben, dann umbenennen: keine halben .eml-Dateien.
     tmp = ziel.with_suffix(".eml.tmp")
-    tmp.write_bytes(msg.as_bytes())
+    # CRLF-Zeilenenden wie im Mail-Standard; sonst erkennt Outlook X-Unsent evtl. nicht.
+    tmp.write_bytes(msg.as_bytes(policy=policy.SMTP))
     tmp.replace(ziel)
     log.info("Entwurf gespeichert: %s", ziel)
     return ziel
